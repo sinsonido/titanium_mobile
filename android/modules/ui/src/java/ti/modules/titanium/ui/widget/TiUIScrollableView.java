@@ -168,6 +168,10 @@ public class TiUIScrollableView extends TiUIView
 			@Override
 			public void onPageScrolled(int positionRoundedDown, float positionOffset, int positionOffsetPixels)
 			{
+				if (mViews.isEmpty()) {
+ 					return;
+ 				}
+
 				isValidScroll = true;
 
 				// When we touch and drag the view and hold it inbetween the second
@@ -189,6 +193,11 @@ public class TiUIScrollableView extends TiUIView
 				// half up; ie, if it has a value of 1.5, it will be rounded up to 2; if
 				// it has a value of 1.4, it will be rounded down to 1.
 				mCurIndex = (int) Math.floor(positionFloat + 0.5);
+				//AvParche
+				int viewsSize = mViews.size() - 1;
+				if (mCurIndex > viewsSize) {
+					mCurIndex = viewsSize;
+				}
 				((ScrollableViewProxy)proxy).fireScroll(mCurIndex, positionFloat, mViews.get(mCurIndex));
 
 				// Note that we didn't just fire a `dragend`.  See the above comment
