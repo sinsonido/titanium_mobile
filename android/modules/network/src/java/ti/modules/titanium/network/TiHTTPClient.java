@@ -421,6 +421,7 @@ public class TiHTTPClient
 				if (response != null) {
 					contentEncoding = response.getFirstHeader("Content-Encoding");
 				}
+				
 				if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
 					GZIPInputStream gzis = new GZIPInputStream(entity.getContent());
 					InputStreamReader reader = new InputStreamReader(gzis);
