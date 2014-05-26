@@ -255,7 +255,7 @@ public class TiHTTPClient
 
 				StatusLine statusLine = response.getStatusLine();
 				if (statusLine.getStatusCode() >= 300) {
-					setResponseText(response.getEntity());
+					setResponseTextError(response.getEntity());
 					throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
 				}
 
@@ -378,7 +378,31 @@ public class TiHTTPClient
 			responseOut.close();
 			responseOut = null;
 		}
-
+		
+		private void setResponseTextError(HttpEntity entity) throws IOException, ParseException
+		{
+			if (entity != null) {
+				Header contentEncoding = null;
+				if (response != null) {
+					contentEncoding = response.getFirstHeader("Content-Encoding");
+				}
+				if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
+					is = new GZIPInputStream(entity.getContent());
+					GZIPInputStream gzis = new GZIPInputStream(entity.getContent());
+					InputStreamReader reader = new InputStreamReader(gzis);
+					BufferedReader in = new BufferedReader(reader);
+					StringBuilder builder = new StringBuilder();
+					String aux = "";
+					while ((aux = in.readLine()) != null) {
+					    builder.append(aux);
+					}
+					responseText = builder.toString();
+				} else {
+					is = entity.getContent();
+				}
+			}
+		}
+		
 		private void setResponseText(HttpEntity entity) throws IOException, ParseException
 		{
 			if (entity != null) {
