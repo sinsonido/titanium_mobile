@@ -1433,8 +1433,7 @@ public abstract class TiBaseActivity extends ActionBarActivity
 	{
 		// If all the activities has been killed and the runtime has been disposed, we have to relaunch
 		// the app.
-		if (KrollRuntime.getInstance().getRuntimeState() == KrollRuntime.State.DISPOSED &&
-				savedInstanceState != null && !(activity instanceof TiLaunchActivity)) {
+		if (KrollRuntime.isDisposed() && savedInstanceState != null && !(activity instanceof TiLaunchActivity)) {
 			return true;
 		}
 		return false;
