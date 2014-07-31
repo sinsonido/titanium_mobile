@@ -1722,26 +1722,39 @@ static TiViewProxy * FindViewProxyWithBindIdContainingPoint(UIView *view, CGPoin
 	[eventObject release];	
 }
 
--(void)clearSearchController:(id)sender
+-(CGFloat)contentWidthForWidth:(CGFloat)width
 {
-    if (sender == self) {
-        RELEASE_TO_NIL(tableController);
-        RELEASE_TO_NIL(searchController);
-        [searchViewProxy ensureSearchBarHeirarchy];
-    }
+    return width;
 }
 
--(void)initSearchController:(id)sender
+-(CGFloat)contentHeightForWidth:(CGFloat)width
 {
-    if (sender == self) {
-        tableController = [[UITableViewController alloc] init];
-        [TiUtils configureController:tableController withObject:nil];
-        tableController.tableView = [self tableView];
-        searchController = [[UISearchDisplayController alloc] initWithSearchBar:[searchViewProxy searchBar] contentsController:tableController];
-        searchController.searchResultsDataSource = self;
-        searchController.searchResultsDelegate = self;
-        searchController.delegate = self;
+    if (_tableView == nil) {
+        return 0;
     }
+    
+    BOOL useSection = NO;
+    BOOL useHeader = NO;
+    NSInteger lastSectionIndex = [self numberOfSectionsInTableView:_tableView] - 1;
+    
+    if (lastSectionIndex < 0) {
+        useHeader = YES;
+    } else {
+        useSection = YES;
+    }
+    
+    CGFloat resultHeight = 0;
+    if (useSection) {
+        resultHeight = [_tableView rectForSection:lastSectionIndex].size.height;
+    } else {
+        resultHeight = [_headerViewProxy autoHeightForSize:CGSizeMake(width, _tableView.bounds.size.height)];
+    }
+    
+    if (_footerViewProxy) {
+        resultHeight += [_footerViewProxy autoHeightForSize:CGSizeMake(width, _tableView.bounds.size.height)];
+    }
+    
+    return resultHeight;
 }
 
 #pragma mark - UITapGestureRecognizer
