@@ -1762,6 +1762,28 @@ static TiViewProxy * FindViewProxyWithBindIdContainingPoint(UIView *view, CGPoin
     return resultHeight;
 }
 
+-(void)clearSearchController:(id)sender
+{
+    if (sender == self) {
+        RELEASE_TO_NIL(tableController);
+        RELEASE_TO_NIL(searchController);
+        [searchViewProxy ensureSearchBarHeirarchy];
+    }
+}
+
+-(void)initSearchController:(id)sender
+{
+    if (sender == self && tableController == nil) {
+        tableController = [[UITableViewController alloc] init];
+        [TiUtils configureController:tableController withObject:nil];
+        tableController.tableView = [self tableView];
+        searchController = [[UISearchDisplayController alloc] initWithSearchBar:[searchViewProxy searchBar] contentsController:tableController];
+        searchController.searchResultsDataSource = self;
+        searchController.searchResultsDelegate = self;
+        searchController.delegate = self;
+    }
+}
+
 #pragma mark - UITapGestureRecognizer
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
