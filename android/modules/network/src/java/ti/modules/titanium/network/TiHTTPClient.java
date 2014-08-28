@@ -268,7 +268,7 @@ public class TiHTTPClient
 						// Ignore
 					}
 				}
-
+				
 				StatusLine statusLine = response.getStatusLine();
 				if (statusLine.getStatusCode() >= 300) {
 					setResponseTextError(response.getEntity());
