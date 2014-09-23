@@ -1426,7 +1426,7 @@ public abstract class TiBaseActivity extends ActionBarActivity
 		// 2. the app's hosting process has been killed. In this case, onDestroy or any other method
 		// is not called. We can check the status of the root activity to detect this situation.
 		if (savedInstanceState != null && !(activity instanceof TiLaunchActivity) &&
-				(KrollRuntime.getInstance().getRuntimeState() == KrollRuntime.State.DISPOSED || TiApplication.getInstance().rootActivityLatch.getCount() != 0)) {
+				(KrollRuntime.isDisposed() || TiApplication.getInstance().rootActivityLatch.getCount() != 0)) {
 			return true;
 		}
 		return false;

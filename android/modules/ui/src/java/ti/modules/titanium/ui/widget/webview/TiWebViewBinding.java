@@ -147,7 +147,7 @@ public class TiWebViewBinding
 		// Don't try to evaluate js code again if the binding has already been destroyed
 		if (!destroyed) {
 			String code = "_TiReturn.setValue((function(){try{return " + expression
-					+ "+\"\";}catch(ti_eval_err){return '';}})());";
+				+ "+\"\";}catch(ti_eval_err){return '';}})());";
 			Log.d(TAG, "getJSValue:" + code, Log.DEBUG_MODE);
 			returnSemaphore.drainPermits();
 			synchronized (codeSnippets) {
