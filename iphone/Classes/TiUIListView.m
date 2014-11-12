@@ -183,6 +183,11 @@ static TiViewProxy * FindViewProxyWithBindIdContainingPoint(UIView *view, CGPoin
         if ([TiUtils isIOS7OrGreater]) {
             _defaultSeparatorInsets = [_tableView separatorInset];
         }
+        
+        if ([TiUtils isIOS8OrGreater]) {
+            [_tableView setLayoutMargins:UIEdgeInsetsZero];
+        }
+        
     }
     if ([_tableView superview] != self) {
         [self addSubview:_tableView];
@@ -474,11 +479,10 @@ static TiViewProxy * FindViewProxyWithBindIdContainingPoint(UIView *view, CGPoin
     if (searchActive) {
         [self buildResultsForSearchText];
     }
+    [_tableView reloadData];
     if ([searchController isActive]) {
         [[searchController searchResultsTableView] reloadData];
-    } else {
-        [_tableView reloadData];
-    }
+    } 
 }
 
 -(NSIndexPath*)pathForSearchPath:(NSIndexPath*)indexPath
@@ -1234,6 +1238,11 @@ static TiViewProxy * FindViewProxyWithBindIdContainingPoint(UIView *view, CGPoin
                 [cellProxy unarchiveFromTemplate:template];
             }
         }
+        
+        if ([TiUtils isIOS8OrGreater] && (tableView == _tableView)) {
+            [cell setLayoutMargins:UIEdgeInsetsZero];
+        }
+        
         [cellProxy release];
         [cell autorelease];
     }

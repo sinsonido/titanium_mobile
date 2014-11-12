@@ -25,7 +25,6 @@ exports.init = function (logger, config, cli) {
 			logger.info(__('Launching iOS Simulator'));
 
 			var simStarted = false,
-				relaunched = false,
 				startLogTxt = __('Start simulator log'),
 				endLogTxt = __('End simulator log'),
 				endLog = function () {
@@ -43,23 +42,15 @@ exports.init = function (logger, config, cli) {
 				appPath: builder.xcodeAppDir,
 				focus: cli.argv['sim-focus'],
 				logFilename: builder.tiapp.guid + '.log',
+				killIfRunning: true,
 				simType: builder.iosSimType,
 				simVersion: builder.iosSimVersion,
-				killIfRunning: true,
-				relaunchIfStartFail: true,
-				relaunchMaxFailures: config.get('ios.relaunchMaxFailures')
-			}).on('relaunch', function (syslog) {
-				relaunched = true;
-				logger.debug(__('App failed to properly start, retrying...'));
-				syslog && syslog.split('\n').forEach(function (line) {
-					logger.trace(line);
-				});
+				timeout: config.get('ios.simTimeout')
 			}).on('log-file', function (line) {
 				if (!simStarted) {
 					finished && finished();
 					finished = null;
 					simStarted = true;
-					relaunched && logger.log();
 					logger.log(('-- ' + startLogTxt + ' ' + (new Array(75 - startLogTxt.length)).join('-')).grey);
 				}
 				var m = line.match(logLevelRE);
@@ -72,12 +63,12 @@ exports.init = function (logger, config, cli) {
 				} else {
 					logger[lastLogger](line);
 				}
+			}).on('log-debug', function (msg) {
+				logger.debug('[ioslib] '.magenta + msg.replace(/(?:(\[[^\]]+\]) )*/, function (m) { return m.magenta; }));
 			}).on('app-quit', function (code) {
 				endLog();
-				if (code) {
-					finished && finished(new appc.exception(__('An error occurred running the iOS Simulator')));
-					finished = null;
-				}
+				finished && finished(code && new appc.exception(__('An error occurred running the iOS Simulator (ios-sim exit code %s)', code)));
+				finished = null;
 			}).on('error', function (err) {
 				endLog();
 				logger.error(err);
