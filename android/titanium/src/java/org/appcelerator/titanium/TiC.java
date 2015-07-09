@@ -1160,6 +1160,16 @@ public class TiC
 	/**
 	 * @module.api
 	 */
+	public static final String PROPERTY_IMAGE_SCALE = "scale";
+
+	/**
+	 * @module.api
+	 */
+	public static final String PROPERTY_BIG_TEXT = "bigText";
+
+	/**
+	 * @module.api
+	 */
 	public static final String PROPERTY_ENABLED = "enabled";
 
 	/**
@@ -2601,6 +2611,11 @@ public class TiC
 	 */
 	public static final String PROPERTY_MAX_DATE = "maxDate";
 	
+	/**
+	 * @module.api
+	 */
+	public static final String PROPERTY_LARGE_ICON = "largeIcon";
+
 	/**
 	 * @module.api
 	 */

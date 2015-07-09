@@ -7,12 +7,14 @@
 package ti.modules.titanium.network;
 
 import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
@@ -417,6 +419,29 @@ public class TiHTTPClient
 			}
 			responseOut.close();
 			responseOut = null;
+		}
+
+		private void setResponseTextError(HttpEntity entity) throws IOException, ParseException
+		{
+			if (entity != null) {
+				Header contentEncoding = null;
+				if (response != null) {
+					contentEncoding = response.getFirstHeader("Content-Encoding");
+				}
+				if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip")) {
+					GZIPInputStream gzis = new GZIPInputStream(entity.getContent());
+					InputStreamReader reader = new InputStreamReader(gzis);
+					BufferedReader in = new BufferedReader(reader);
+					StringBuilder builder = new StringBuilder();
+					String aux = "";
+					while ((aux = in.readLine()) != null) {
+					    builder.append(aux);
+					}
+					responseText = builder.toString();
+				} else {
+					is = entity.getContent();
+				}
+			}
 		}
 
 		private void setResponseText(HttpEntity entity) throws IOException, ParseException
@@ -1348,10 +1373,12 @@ public class TiHTTPClient
 				if(result != null) {
 					Log.d(TAG, "Have result back from request len=" + result.length(), Log.DEBUG_MODE);
 				}
-				connected = false;
 				setResponseText(result);
+				connected = false;
 
 				if (responseStatusLine.getStatusCode() >= 400) {
+					//HttpEntityEnclosingRequest enclosingEntity = (HttpEntityEnclosingRequest) request;
+					//setResponseTextError(enclosingEntity.getEntity());
 					throw new HttpResponseException(responseStatusLine.getStatusCode(), responseStatusLine.getReasonPhrase());
 				}
 

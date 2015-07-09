@@ -26,6 +26,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 
 
 @Kroll.proxy(creatableInModule=AndroidModule.class, propertyAccessors = {
@@ -69,6 +72,12 @@ public class NotificationProxy extends KrollProxy
 		if (d.containsKey(TiC.PROPERTY_ICON)) {
 			setIcon(d.get(TiC.PROPERTY_ICON));
 		}
+		if (d.containsKey(TiC.PROPERTY_LARGE_ICON)) {
+			setLargeIcon(d.get(TiC.PROPERTY_LARGE_ICON));
+		}
+		if (d.containsKey(TiC.PROPERTY_COLOR)) {
+			setColor(d.get(TiC.PROPERTY_COLOR));
+		}
 		if (d.containsKey(TiC.PROPERTY_TICKER_TEXT)) {
 			setTickerText(TiConvert.toString(d, TiC.PROPERTY_TICKER_TEXT));
 		}
@@ -78,6 +87,9 @@ public class NotificationProxy extends KrollProxy
 		if (d.containsKey(TiC.PROPERTY_AUDIO_STREAM_TYPE)) {
 			setAudioStreamType(TiConvert.toInt(d, TiC.PROPERTY_AUDIO_STREAM_TYPE));
 		}
+		if (d.containsKey(TiC.PROPERTY_BIG_TEXT)) {
+			setBigText((String) d.get(TiC.PROPERTY_BIG_TEXT));
+ 		}
 		if (d.containsKey(TiC.PROPERTY_CONTENT_VIEW)) {
 			setContentView((RemoteViewsProxy) d.get(TiC.PROPERTY_CONTENT_VIEW));
 		}
@@ -147,7 +159,37 @@ public class NotificationProxy extends KrollProxy
 		}
 		setProperty(TiC.PROPERTY_ICON, icon);
 	}
-	
+
+	@Kroll.method @Kroll.setProperty
+	public void setLargeIcon(Object icon)
+	{
+		if (icon instanceof Number) {
+			Bitmap largeIcon = BitmapFactory.decodeResource(TiApplication.getInstance().getResources(), ((Number)icon).intValue());
+			notificationBuilder.setLargeIcon(largeIcon);
+		} else {
+			String iconUrl = TiConvert.toString(icon);
+			if (iconUrl == null) {
+				Log.e(TAG, "Url is null");
+				return;
+			}
+			String iconFullUrl = resolveUrl(null, iconUrl);
+			Bitmap largeIcon = BitmapFactory.decodeResource(TiApplication.getInstance().getResources(), TiUIHelper.getResourceId(iconFullUrl));
+			notificationBuilder.setLargeIcon(largeIcon);
+		}
+		setProperty(TiC.PROPERTY_LARGE_ICON, icon);
+	}
+
+	@Kroll.method @Kroll.setProperty
+	public void setColor(Object color)
+	{
+		if (color instanceof String) {
+			notificationBuilder.setColor(Color.parseColor((String)color));
+		} else {
+			notificationBuilder.setColor(((Number)color).intValue());
+		}
+		setProperty(TiC.PROPERTY_COLOR, color);
+	}
+
 	@Kroll.method @Kroll.setProperty
 	public void setVisibility(int visibility)
 	{
@@ -190,6 +232,17 @@ public class NotificationProxy extends KrollProxy
 			notificationBuilder.setSound(this.sound, audioStreamType);
 		}
 		setProperty(TiC.PROPERTY_AUDIO_STREAM_TYPE, type);
+	}
+
+	public void setBigText(String _bigText)
+	{
+		CharSequence cs = _bigText;
+		NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
+		bigText.bigText(cs);
+		bigText.setBigContentTitle("PULL&BEAR");
+		Log.i(TAG, "bigText: " + cs);
+		notificationBuilder.setStyle(bigText);
+		setProperty(TiC.PROPERTY_BIG_TEXT, cs);
 	}
 
 	@Kroll.method @Kroll.setProperty

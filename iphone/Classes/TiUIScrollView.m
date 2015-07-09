@@ -74,6 +74,7 @@
 
 - (void) dealloc
 {
+	scrollView.delegate = nil;
 	RELEASE_TO_NIL(wrapperView);
 	RELEASE_TO_NIL(scrollView);
 	[super dealloc];

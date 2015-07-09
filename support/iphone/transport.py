@@ -13,7 +13,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(template_dir),'modu
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(template_dir),'common')))
 
 from tiapp import *
-from module import ModuleDetector
+from moduleDetector import ModuleDetector
 from pbxproj import PBXProj
 from localecompiler import LocaleCompiler
 from projector import Projector

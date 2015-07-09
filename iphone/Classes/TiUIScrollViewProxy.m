@@ -327,6 +327,7 @@ static NSArray* scrollViewKeySequence;
 
 -(void)scrollTo:(id)args
 {
+    NSLog(@"[WARN] scrollTo: ");
 	ENSURE_ARG_COUNT(args,2);
 	TiPoint * offset = [[TiPoint alloc] initWithPoint:CGPointMake(
 			[TiUtils floatValue:[args objectAtIndex:0]],
@@ -338,6 +339,7 @@ static NSArray* scrollViewKeySequence;
 
 -(void)scrollToBottom:(id)args
 {
+    NSLog(@"[WARN] scrollToBottom: ");
     TiThreadPerformOnMainThread(^{
         [(TiUIScrollView *)[self view] scrollToBottom];
     }, YES);
@@ -345,6 +347,7 @@ static NSArray* scrollViewKeySequence;
 
 -(void) setContentOffset:(id)value withObject:(id)animated
 {
+    NSLog(@"[WARN] setContentOffset: ");
     TiThreadPerformOnMainThread(^{
         [(TiUIScrollView *)[self view] setContentOffset_:value withObject:animated];
     }, YES);
@@ -359,6 +362,7 @@ static NSArray* scrollViewKeySequence;
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView_               // scrolling has ended
 {
+    NSLog(@"[WARN] scrollViewDidEndDecelerating: ");
 	if ([self _hasListeners:@"scrollEnd"])
 	{	//TODO: Deprecate old event.
 		[self fireEvent:@"scrollEnd" withObject:nil];
@@ -371,6 +375,7 @@ static NSArray* scrollViewKeySequence;
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    NSLog(@"[WARN] scrollViewDidScroll: ");
     CGPoint offset = [scrollView contentOffset];
     if ([self _hasListeners:@"scroll"]) {
         [self fireEvent:@"scroll" withObject:[NSDictionary dictionaryWithObjectsAndKeys:

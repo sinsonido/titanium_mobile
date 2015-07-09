@@ -295,7 +295,7 @@ class Compiler(object):
 			# Have to load the module detection here, in order to
 			# prevent distributing even MORE stuff in export/transport
 			sys.path.append(os.path.join(template_dir,'../module'))
-			from module import ModuleDetector
+			from moduleDetector import ModuleDetector
 
 			detector = ModuleDetector(self.project_dir)
 			missing_modules, modules = detector.find_app_modules(ti, 'iphone', self.deploytype)

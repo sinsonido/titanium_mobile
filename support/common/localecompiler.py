@@ -66,7 +66,7 @@ class LocaleCompiler(object):
 		f = codecs.open(locale_file,'w','utf-16')
 		f.write(u'/**\n * Appcelerator Titanium\n * this is a generated file - DO NOT EDIT\n */\n\n')
 		dom = parse(file)
-		appkeys = { 'appname' : 'CFBundleDisplayName' }
+		appkeys = { 'appname' : 'CFBundleDisplayName' , 'NSLocationWhenInUseUsageDescription' : 'NSLocationWhenInUseUsageDescription'}
 		for node in dom.documentElement.childNodes:
 			if node.nodeType != 1: continue
 			name = node.attributes['name'].nodeValue
